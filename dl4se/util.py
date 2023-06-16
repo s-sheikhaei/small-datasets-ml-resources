@@ -42,7 +42,7 @@ def set_seed(config_or_seed):
     np.random.seed(seed)
     torch.manual_seed(seed)
 
-    logger.warn(f'Setting seed to {seed}')
+    #logger.warn(f'Setting seed to {seed}')
     #if config.n_gpu > 0:
     torch.cuda.manual_seed_all(seed)
 
