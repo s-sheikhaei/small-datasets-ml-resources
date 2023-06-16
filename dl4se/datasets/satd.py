@@ -181,9 +181,7 @@ class Dataset:
 
         # if self.backtrans_df is not None:
         #     train_df = pd.concat(
-        #         [train_df, self.backtrans_df[self.backtrans_df.project_
-        
-        name != leave_out_project]], ignore_index=True)
+        #         [train_df, self.backtrans_df[self.backtrans_df.project_name != leave_out_project]], ignore_index=True)
 
         # if self.binary and self.self_train_df is not None:
         #     train_df = pd.concat([train_df, self.self_train_df], ignore_index=True)
