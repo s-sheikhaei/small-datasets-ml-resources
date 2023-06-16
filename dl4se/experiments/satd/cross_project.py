@@ -8,6 +8,10 @@ import pandas as pd
 
 from pathlib import Path
 
+# Sadegh: I add this to handle "package not found" error in colab:
+import sys
+sys.path.append('/content/small-datasets-ml-resources')
+
 from dl4se.transformers.experiment import Experiment
 import dl4se.transformers.util as tu
 from dl4se import util
@@ -26,8 +30,11 @@ def parse_args(parser):
 
 
 def main(config, results):
-
-    logger.warning('Unclassified threshold: %s', config.self_train_thresh)
+    
+    config.model_path = util.models_path('stackoverflow_1M')
+    
+    # logger.warning('Unclassified threshold: %s', config.self_train_thresh)
+    print('Unclassified threshold:', config.self_train_thresh)
 
     ds = TDDataset(config, binary=True,
                    self_train_thresh=config.self_train_thresh,
