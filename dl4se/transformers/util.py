@@ -74,7 +74,9 @@ def get_dataloader(config, tokenizer, text_values, label_ids, bs, text_pair_valu
                                   truncation=True,
                                   pad_to_max_length=True) for i, t in enumerate(text_values)]
 
-    logger.debug(tokenizer.decode(input_ids[0]))
+    #logger.debug(tokenizer.decode(input_ids[0]))
+    print('tokenizer.decode(input_ids[0]):')
+    print(tokenizer.decode(input_ids[0]))
 
     attention_masks = build_attention_masks(input_ids)
 
@@ -104,7 +106,7 @@ def get_dataloader(config, tokenizer, text_values, label_ids, bs, text_pair_valu
         else:
             # label values are boolean
             label_weights = 1.0 / np.sum(label_ids, axis=0)
-        logger.info('label weights %s', label_weights / label_weights.sum())
+        #logger.info('label weights %s', label_weights / label_weights.sum())
         if not config.multi_label:
             weights = [label_weights[l] for l in label_ids]
         else:
@@ -115,7 +117,8 @@ def get_dataloader(config, tokenizer, text_values, label_ids, bs, text_pair_valu
     else:
         sampler = SequentialSampler(dataset)
 
-    logger.info(f"Using sampler: {sampler}")
+    #logger.info(f"Using sampler: {sampler}")
+    print(f"Using sampler: {sampler}")
     dataloader = DataLoader(dataset, sampler=sampler, batch_size=bs, num_workers=4)
 
     return dataloader
@@ -155,10 +158,12 @@ def load_model(config, model_config):
     model_cls = AutoHeadlessConfig.model_class(model_config)
     head_class = AutoHeadlessConfig.head_class(model_config)
 
-    logger.debug("loaded model_config: %s", model_config)
+    # logger.debug("loaded model_config: %s", model_config)
+    print("loaded model_config:", model_config)
 
     if config.no_pretrain:
-        logger.warning("Using non pretrained model!")
+        # logger.warning("Using non pretrained model!")
+        print('Warning: Using non pretrained model!')
         model = model_cls(config=model_config)
     else:
         model = model_cls.from_pretrained(
@@ -167,11 +172,13 @@ def load_model(config, model_config):
         )
 
         if config.reinit_layers:
-            logger.info(f"reinitializing layers... {config.reinit_layers}")
+            # logger.info(f"reinitializing layers... {config.reinit_layers}")
+            print(f"reinitializing layers... {config.reinit_layers}")
             model.reinit_layers(config.reinit_layers)
 
         if config.reinit_pooler:
-            logger.info(f"reinitializing pooler...")
+            # logger.info(f"reinitializing pooler...")
+            print("reinitializing pooler...")
             model.reinit_pooler()
 
     return model
