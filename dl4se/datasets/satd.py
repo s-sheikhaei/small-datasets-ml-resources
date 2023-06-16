@@ -50,7 +50,7 @@ class Dataset:
         df = pd.read_csv(util.data_path(
             "satd", "dataset.csv"), delimiter=',')
 
-        self.project_names = df.projectname.unique()
+        self.project_names = df.project_name.unique()
         self._label_names = sorted(df.classification.unique().tolist())
         # move WITHOUT_CLASSIFICATION to 0th position (so it has class_id 0)       
         self._label_names.remove(self.NEGATIVE_CLASS_NAME)
@@ -76,7 +76,7 @@ class Dataset:
             self.self_train_df = self.preprocess_df(self.self_train_df, {'NO_TECHNICAL_DEBT': 0, 'TECHNICAL_DEBT': 1})
 
             print(self.self_train_df.head())
-            self.self_train_df = self.self_train_df[['projectname', 'commenttext', 'preprocessed', 'label']]
+            self.self_train_df = self.self_train_df[['project_name', 'comment_text', 'preprocessed', 'label']]
             self.self_train_df.dropna(inplace=True)
             print(self.self_train_df.head())
             print("unclassified shape after filter", self.self_train_df.shape)
@@ -103,7 +103,7 @@ class Dataset:
             print(backtrans_df.label)
             print(positive_df.label)
             assert((backtrans_df.label == positive_df.label).all())
-            assert((backtrans_df.projectname == positive_df.projectname).all())
+            assert((backtrans_df.project_name == positive_df.project_name).all())
             return backtrans_df
 
         backtrans_dfs = map(map_backtrans_df, backtrans_dfs)
@@ -111,12 +111,12 @@ class Dataset:
 
 
     def preprocess_df(self, df, label_map):
-        df = df.assign(preprocessed = df.commenttext.map(preprocess_comment))
+        df = df.assign(preprocessed = df.comment_text.map(preprocess_comment))
         df['label'] = df.classification.map(label_map)
         df.dropna(inplace=True)
 
         if self.config.remove_duplicates:
-            df.drop_duplicates(('projectname', 'preprocessed'), inplace=True)
+            df.drop_duplicates(('project_name', 'preprocessed'), inplace=True)
 
         return df
 
@@ -160,7 +160,7 @@ class Dataset:
                             bs=self.config.train_bs, balance=True)
 
     def build_train_df(self, leave_out_project):
-        train_df = self.df[self.df.projectname != leave_out_project]
+        train_df = self.df[self.df.project_name != leave_out_project]
 
         if self.config.sample_frac:
             train_df = train_df.sample(frac=self.config.sample_frac)
@@ -177,11 +177,13 @@ class Dataset:
             raise ValueError(f"invalid project {leave_out_project}")
 
         train_df = self.build_train_df(leave_out_project)
-        valid_df = self.df[self.df.projectname == leave_out_project]
+        valid_df = self.df[self.df.project_name == leave_out_project]
 
         # if self.backtrans_df is not None:
         #     train_df = pd.concat(
-        #         [train_df, self.backtrans_df[self.backtrans_df.projectname != leave_out_project]], ignore_index=True)
+        #         [train_df, self.backtrans_df[self.backtrans_df.project_
+        
+        name != leave_out_project]], ignore_index=True)
 
         # if self.binary and self.self_train_df is not None:
         #     train_df = pd.concat([train_df, self.self_train_df], ignore_index=True)
