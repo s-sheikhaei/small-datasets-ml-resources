@@ -32,6 +32,7 @@ def parse_args(parser):
 def main(config, results):
     
     config.model_path = util.models_path('stackoverflow_1M')
+    config.interp_out_file = 'result.csv'
     
     # logger.warning('Unclassified threshold: %s', config.self_train_thresh)
     print('Unclassified threshold:', config.self_train_thresh)
