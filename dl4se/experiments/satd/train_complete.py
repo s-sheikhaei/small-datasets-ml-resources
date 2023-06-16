@@ -6,6 +6,10 @@ import itertools
 
 import pandas as pd
 
+# Sadegh: I add this to handle "package not found" error in colab:
+import sys
+sys.path.append('/content/small-datasets-ml-resources')
+
 from dl4se.transformers.experiment import Experiment
 import dl4se.transformers.util as tu
 from dl4se import util
